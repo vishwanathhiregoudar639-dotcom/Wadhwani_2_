@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhatGuard – Smart Ghat Road Warning System</title>
+    <meta name="description" content="GhatGuard - Making Ghat Roads Safer with Smart Sensor Technology. Real-time vehicle detection and driver alerts at blind curves.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a4da2;
+            --primary-dark: #083a7a;
+            --primary-light: #1a6fd4;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #06d6a0;
+            --white: #ffffff;
+            --light: #f0f7ff;
+            --light-green: #ecfdf5;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-700);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--gray-900);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .logo-text span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-600);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(10,77,162,0.4);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--gray-700);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -6px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a1628 0%, #0d2b5e 40%, #0a4da2 100%);
+            padding-top: 70px;
+        }
+
+        .hero-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(16,185,129,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(26,111,212,0.2) 0%, transparent 50%),
+                radial-gradient(circle at 60% 80%, rgba(6,214,160,0.1) 0%, transparent 50%);
+        }
+
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text {
+            color: white;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: white;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent), #34d399, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 35px;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16,185,129,0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            animation: fadeInUp 0.8s ease 0.8s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .hero-stat-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .hero-visual {
+            position: relative;
+            animation: fadeInRight 1s ease 0.5s both;
+        }
+
+        .hero-image-container {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #1a365d, #2d5a87);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .road-illustration {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .road-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-xl);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-card-1 {
+            top: 20px;
+            right: -20px;
+            animation-delay: 0s;
+        }
+
+        .floating-card-2 {
+            bottom: 30px;
+            left: -20px;
+            animation-delay: 1.5s;
+        }
+
+        .floating-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .floating-card h4 {
+            font-size: 0.85rem;
+            color: var(--gray-800);
+            margin-bottom: 2px;
+        }
+
+        .floating-card p {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-tag.green {
+            background: var(--light-green);
+            color: var(--secondary-dark);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--gray-500);
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: linear-gradient(135deg, #fef2f2, #fff7ed, #fefce8);
+            position: relative;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .problem-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+
+        .problem-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #dc2626, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .problem-img svg {
+            width: 80%;
+            height: 80%;
+        }
+
+        .danger-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: pulse-danger 2s infinite;
+        }
+
+        @keyframes pulse-danger {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+        }
+
+        .problem-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--gray-900);
+        }
+
+        .problem-content h2 span {
+            color: #dc2626;
+        }
+
+        .problem-content > p {
+            color: var(--gray-600);
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .problem-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .problem-stat {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid #dc2626;
+        }
+
+        .problem-stat .number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #dc2626;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .problem-stat .label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Solution Section */
+        .solution-section {
+            background: var(--white);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .solution-card {
+            background: var(--gray-50);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-100);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .solution-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            background: white;
+        }
+
+        .solution-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .solution-card:nth-child(1) .solution-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .solution-card:nth-child(2) .solution-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .solution-card:nth-child(3) .solution-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .solution-card:nth-child(4) .solution-icon {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .solution-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .solution-card p {
+            color: var(--gray-500);
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-section {
+            background: linear-gradient(135deg, #0a1628, #0d2b5e);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-section .section-header h2 {
+            color: white;
+        }
+
+        .how-section .section-header p {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .how-section .section-tag {
+            background: rgba(16,185,129,0.15);
+            color: var(--accent);
+        }
+
+        .how-steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            position: relative;
+        }
+
+        .how-steps::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary), var(--accent));
+            z-index: 0;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        .step-card:nth-child(1) .step-number {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .step-card:nth-child(2) .step-number {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .step-card:nth-child(3) .step-number {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .step-card:nth-child(4) .step-number {
+            background: linear-gradient(135deg, #06d6a0, #34d399);
+            color: white;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .step-card h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .step-card p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.95rem;
+        }
+
+        /* Features */
+        .features-section {
+            background: var(--light);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-100);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            background: var(--light);
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--gray-500);
+            font-size: 0.95rem;
+        }
+
+        /* Benefits */
+        .benefits-section {
+            background: white;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .benefits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            gap: 16px;
+            padding: 24px;
+            background: var(--gray-50);
+            border-radius: 16px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .benefit-item:hover {
+            background: white;
+            border-color: var(--secondary);
+            box-shadow: var(--shadow-lg);
+            transform: translateX(8px);
+        }
+
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .benefit-text p {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .benefits-image {
+            position: relative;
+        }
+
+        .benefits-img {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefits-img::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: rotate-bg 10s linear infinite;
+        }
+
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Target Customers */
+        .customers-section {
+            background: var(--light);
+        }
+
+        .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .customer-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+        }
+
+        .customer-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .customer-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .customer-card:hover .customer-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .customer-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .customer-card p {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        /* Impact Stats */
+        .impact-section {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--secondary));
+            color: white;
+            padding: 80px 0;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .impact-card {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .impact-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .impact-number {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 8px;
+        }
+
+        .impact-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Gallery */
+        .gallery-section {
+            background: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 220px);
+            gap: 16px;
+        }
+
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.4s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            color: white;
+            font-size: 1rem;
+        }
+
+        .gallery-overlay p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Dashboard Preview */
+        .dashboard-section {
+            background: var(--light);
+            overflow: hidden;
+        }
+
+        .dashboard-preview {
+            background: var(--gray-900);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-700);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dashboard-dot.red { background: #ef4444; }
+        .dashboard-dot.yellow { background: #f59e0b; }
+        .dashboard-dot.green { background: #10b981; }
+
+        .dashboard-title {
+            color: var(--gray-400);
+            font-size: 0.85rem;
+            margin-left: 12px;
+        }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .dash-card {
+            background: var(--gray-800);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .dash-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .dash-card-title {
+            color: var(--gray-400);
+            font-size: 0.85rem;
+        }
+
+        .dash-card-value {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .dash-card-change {
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        .dash-chart {
+            height: 60px;
+            display: flex;
+            align-items: end;
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .dash-bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            animation: grow-bar 1s ease forwards;
+        }
+
+        @keyframes grow-bar {
+            from { height: 0; }
+        }
+
+        .dash-card.full-width {
+            grid-column: span 3;
+        }
+
+        .dash-map {
+            height: 200px;
+            background: linear-gradient(135deg, #1a365d, #2d5a87);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse-map 2s infinite;
+        }
+
+        @keyframes pulse-map {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(6,214,160,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(6,214,160,0); }
+        }
+
+        /* Testimonials */
+        .testimonials-section {
+            background: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--gray-50);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.4s;
+            border: 1px solid var(--gray-100);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.1;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            background: white;
+        }
+
+        .testimonial-stars {
+            color: #f59e0b;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-text {
+            color: var(--gray-600);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .testimonial-card:nth-child(1) .testimonial-avatar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .testimonial-card:nth-child(2) .testimonial-avatar {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+        }
+
+        .testimonial-card:nth-child(3) .testimonial-avatar {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Demo Request */
+        .demo-section {
+            background: linear-gradient(135deg, #0a1628, #0d2b5e);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16,185,129,0.1), transparent 70%);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .demo-content h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .demo-content p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .demo-features {
+            list-style: none;
+        }
+
+        .demo-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .demo-features li i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .demo-form-container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .demo-form h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(6,214,160,0.1);
+        }
+
+        .form-group select option {
+            background: var(--gray-800);
+            color: white;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16,185,129,0.4);
+        }
+
+        /* Contact */
+        .contact-section {
+            background: var(--gray-50);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contact-info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s;
+            border: 1px solid var(--gray-100);
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .contact-info-text h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .contact-info-text p {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+
+        .contact-form {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .contact-form h3 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .contact-form .form-group input,
+        .contact-form .form-group textarea {
+            background: var(--gray-50);
+            color: var(--gray-800);
+            border-color: var(--gray-200);
+        }
+
+        .contact-form .form-group input::placeholder,
+        .contact-form .form-group textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .contact-form .form-group input:focus,
+        .contact-form .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10,77,162,0.1);
+        }
+
+        .contact-form .form-group label {
+            color: var(--gray-700);
+        }
+
+        .contact-submit {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .contact-submit:hover {
+            box-shadow: 0 10px 30px rgba(10,77,162,0.4);
+        }
+
+        /* Map */
+        .map-container {
+            margin-top: 30px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-900);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--gray-800);
+        }
+
+        .footer-brand p {
+            margin-top: 16px;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-social a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-column h4 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-bottom-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Scroll Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            border: none;
+            font-size: 18px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow-xl);
+            padding: 20px;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 12px 16px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .mobile-menu a:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        /* Success Notification */
+        .notification {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification i {
+            color: var(--secondary);
+            font-size: 1.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .how-steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .how-steps::before {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .customers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .impact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 90px;
+                min-height: auto;
+                padding-bottom: 60px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .hero-stat-number {
+                font-size: 1.5rem;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .how-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .customers-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .impact-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-item:nth-child(1) {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-card.full-width {
+                grid-column: span 1;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-card {
+                display: none;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.7rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .problem-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .customers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-number {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* Loading animation */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader-wrapper.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-right-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Form submitted successfully!</span>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">Ghat<span>Guard</span></div>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#demo" class="nav-cta">Request Demo</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" onclick="closeMobileMenu()">Home</a>
+        <a href="#problem" onclick="closeMobileMenu()">Problem</a>
+        <a href="#solution" onclick="closeMobileMenu()">Solution</a>
+        <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+        <a href="#features" onclick="closeMobileMenu()">Features</a>
+        <a href="#impact" onclick="closeMobileMenu()">Impact</a>
+        <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+        <a href="#demo" onclick="closeMobileMenu()" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; text-align: center; border-radius: 50px; margin-top: 10px;">Request Demo</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg-pattern"></div>
+        <div class="hero-particles" id="particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Smart Infrastructure Technology
+                    </div>
+                    <h1>Making Ghat Roads Safer with <span class="gradient-text">Smart Sensor Technology</span></h1>
+                    <p class="hero-description">Real-time vehicle detection and driver alerts at blind curves to reduce accidents and save lives. Powered by IoT sensors and intelligent warning systems.</p>
+                    <div class="hero-buttons">
+                        <a href="#demo" class="btn-primary">
+                            <i class="fas fa-play-circle"></i> Request Demo
+                        </a>
+                        <a href="#contact" class="btn-secondary">
+                            <i class="fas fa-phone-alt"></i> Contact Us
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">500+</div>
+                            <div class="hero-stat-label">Curves Protected</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">95%</div>
+                            <div class="hero-stat-label">Accident Reduction</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">24/7</div>
+                            <div class="hero-stat-label">Active Monitoring</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-image-container">
+                        <div class="hero-image">
+                            <svg class="road-svg" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Mountain background -->
+                                <path d="M0 400 L100 200 L200 280 L300 150 L400 220 L500 100 L500 400 Z" fill="#1a4a2e" opacity="0.5"/>
+                                <path d="M0 400 L150 250 L250 320 L350 200 L450 270 L500 180 L500 400 Z" fill="#1a4a2e" opacity="0.3"/>
+                                
+                                <!-- Road -->
+                                <path d="M50 380 Q150 350 200 300 Q250 250 280 200 Q310 150 350 130 Q400 110 450 120" stroke="#555" stroke-width="40" fill="none" stroke-linecap="round"/>
+                                <path d="M50 380 Q150 350 200 300 Q250 250 280 200 Q310 150 350 130 Q400 110 450 120" stroke="#888" stroke-width="2" fill="none" stroke-dasharray="15 10" stroke-linecap="round"/>
+                                
+                                <!-- Sensor 1 -->
+                                <circle cx="200" cy="300" r="8" fill="#06d6a0">
+                                    <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                <circle cx="200" cy="300" r="20" stroke="#06d6a0" stroke-width="2" fill="none" opacity="0.3">
+                                    <animate attributeName="r" values="20;30;20" dur="2s" repeatCount="indefinite"/>
+                                    <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                                
+                                <!-- Sensor 2 -->
+                                <circle cx="350" cy="130" r="8" fill="#f59e0b">
+                                    <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                </circle>
+                                <circle cx="350" cy="130" r="20" stroke="#f59e0b" stroke-width="2" fill="none" opacity="0.3">
+                                    <animate attributeName="r" values="20;30;20" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                    <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                                </circle>
+                                
+                                <!-- Car -->
+                                <rect x="110" y="350" width="30" height="15" rx="5" fill="#3b82f6">
+                                    <animateMotion path="M0,0 Q100,-30 150,-80 Q200,-130 230,-170 Q260,-220 300,-240 Q350,-260 400,-250" dur="6s" repeatCount="indefinite"/>
+                                </rect>
+                                
+                                <!-- Warning sign -->
+                                <g transform="translate(330,90)">
+                                    <polygon points="0,-15 13,10 -13,10" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                                    <text x="0" y="6" text-anchor="middle" fill="white" font-size="12" font-weight="bold">!</text>
+                                    <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+                                </g>
+                                
+                                <!-- LED Warning -->
+                                <rect x="310" y="105" width="4" height="15" rx="2" fill="#ef4444">
+                                    <animate attributeName="fill" values="#ef4444;#f59e0b;#ef4444" dur="0.8s" repeatCount="indefinite"/>
+                                </rect>
+                                
+                                <!-- Trees -->
+                                <circle cx="80" cy="310" r="15" fill="#166534" opacity="0.6"/>
+                                <circle cx="420" cy="160" r="12" fill="#166534" opacity="0.6"/>
+                                <circle cx="460" cy="180" r="10" fill="#166534" opacity="0.4"/>
+                                
+                                <!-- Signal waves -->
+                                <path d="M210 290 Q240 270 270 280" stroke="#06d6a0" stroke-width="2" fill="none" opacity="0.5">
+                                    <animate attributeName="opacity" values="0.5;0;0.5" dur="1.5s" repeatCount="indefinite"/>
+                                </path>
+                                <path d="M215 285 Q245 260 275 275" stroke="#06d6a0" stroke-width="1.5" fill="none" opacity="0.3">
+                                    <animate attributeName="opacity" values="0.3;0;0.3" dur="1.5s" repeatCount="indefinite" begin="0.3s"/>
+                                </path>
+                            </svg>
+                        </div>
+                        
+                        <div class="floating-card floating-card-1">
+                            <div class="floating-card-icon" style="background: #dcfce7; color: #16a34a;">
+                                <i class="fas fa-satellite-dish"></i>
+                            </div>
+                            <h4>Sensor Active</h4>
+                            <p>Vehicle detected 200m ahead</p>
+                        </div>
+                        
+                        <div class="floating-card floating-card-2">
+                            <div class="floating-card-icon" style="background: #fef3c7; color: #d97706;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h4>Warning Alert</h4>
+                            <p>LED signals activated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="section problem-section" id="problem">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-image animate-on-scroll">
+                    <div class="problem-img">
+                        <svg viewBox="0 0 400 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Danger scene -->
+                            <rect width="400" height="350" fill="#1a1a2e"/>
+                            <path d="M0 350 L80 180 L160 250 L240 120 L320 200 L400 80 L400 350 Z" fill="#2d3436" opacity="0.5"/>
+                            
+                            <!-- Curved road -->
+                            <path d="M30 330 Q120 300 170 240 Q220 180 240 160 Q270 130 320 120 Q370 110 390 130" stroke="#4a4a4a" stroke-width="35" fill="none" stroke-linecap="round"/>
+                            <path d="M30 330 Q120 300 170 240 Q220 180 240 160 Q270 130 320 120 Q370 110 390 130" stroke="#666" stroke-width="2" fill="none" stroke-dasharray="12 8"/>
+                            
+                            <!-- Cliff edge -->
+                            <path d="M160 240 L140 350" stroke="#8b4513" stroke-width="3" opacity="0.5"/>
+                            <path d="M170 230 L150 350" stroke="#8b4513" stroke-width="3" opacity="0.5"/>
+                            
+                            <!-- Car 1 coming from left -->
+                            <rect x="100" y="290" width="28" height="14" rx="4" fill="#3b82f6"/>
+                            <rect x="104" y="286" width="12" height="6" rx="2" fill="#60a5fa"/>
+                            <!-- Headlights -->
+                            <circle cx="128" cy="295" r="3" fill="#fef08a"/>
+                            <circle cx="128" cy="300" r="3" fill="#fef08a"/>
+                            
+                            <!-- Car 2 coming from right (hidden by curve) -->
+                            <rect x="290" y="115" width="28" height="14" rx="4" fill="#ef4444"/>
+                            <rect x="296" y="111" width="12" height="6" rx="2" fill="#fca5a5"/>
+                            
+                            <!-- Blind spot indicator -->
+                            <circle cx="210" cy="190" r="30" stroke="#ef4444" stroke-width="2" fill="none" stroke-dasharray="5 3">
+                                <animate attributeName="r" values="25;35;25" dur="2s" repeatCount="indefinite"/>
+                                <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/>
+                            </circle>
+                            <text x="210" y="185" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="bold">BLIND</text>
+                            <text x="210" y="198" text-anchor="middle" fill="#ef4444" font-size="10" font-weight="bold">SPOT</text>
+                            
+                            <!-- Fog effect -->
+                            <rect x="140" y="150" width="130" height="80" rx="40" fill="white" opacity="0.08"/>
+                            <rect x="160" y="170" width="100" height="50" rx="25" fill="white" opacity="0.05"/>
+                            
+                            <!-- Danger signs -->
+                            <g transform="translate(200, 60)">
+                                <polygon points="0,-25 22,15 -22,15" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                                <text x="0" y="10" text-anchor="middle" fill="white" font-size="18" font-weight="bold">!</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="danger-badge">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        High Accident Zone
+                    </div>
+                </div>
+                <div class="problem-content animate-on-scroll">
+                    <div class="section-tag" style="background: #fef2f2; color: #dc2626;">
+                        <i class="fas fa-exclamation-circle"></i> The Problem
+                    </div>
+                    <h2>Blind Curves on Ghat Roads Are <span>Deadly</span></h2>
+                    <p>Ghat roads wind through mountainous terrain with sharp, blind curves where drivers cannot see oncoming traffic. Poor visibility, combined with narrow roads and steep gradients, leads to frequent head-on collisions, especially during fog, rain, and night conditions.</p>
+                    <div class="problem-stats">
+                        <div class="problem-stat">
+                            <div class="number">1,500+</div>
+                            <div class="label">Annual accidents on ghat roads</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="number">70%</div>
+                            <div class="label">Caused by blind curve collisions</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="number">400+</div>
+                            <div class="label">Lives lost every year</div>
+                        </div>
+                        <div class="problem-stat">
+                            <div class="number">85%</div>
+                            <div class="label">Preventable with early warnings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="section solution-section" id="solution">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag green">
+                    <i class="fas fa-lightbulb"></i> Our Solution
+                </div>
+                <h2>Intelligent Warning System for Ghat Road Safety</h2>
+                <p>GhatGuard deploys smart sensors at blind curves to detect approaching vehicles and warn drivers on the opposite side in real-time.</p>
+            </div>
+            <div class="solution-grid">
+                <div class="solution-card animate-on-scroll">
+                    <div class="solution-icon">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <h3>Sensor-Based Vehicle Detection</h3>
+                    <p>Advanced IoT sensors detect approaching vehicles from a safe distance, accurately identifying vehicle type, speed, and direction even in poor visibility conditions.</p>
+                </div>
+                <div class="solution-card animate-on-scroll">
+                    <div class="solution-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h3>Real-Time Audio & Visual Alerts</h3>
+                    <p>Bright LED warning displays and audio sirens activate instantly when a vehicle is detected, alerting drivers on the opposite side of the blind curve to slow down.</p>
+                </div>
+                <div class="solution-card animate-on-scroll">
+                    <div class="solution-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Easy Installation & Low Maintenance</h3>
+                    <p>Modular design allows quick deployment on any curve. Solar-powered options eliminate wiring needs. Built with weather-resistant materials for years of trouble-free operation.</p>
+                </div>
+                <div class="solution-card animate-on-scroll">
+                    <div class="solution-icon">
+                        <i class="fas fa-cloud-sun-rain"></i>
+                    </div>
+                    <h3>Reliable in All Weather</h3>
+                    <p>Engineered to perform flawlessly in rain, fog, extreme heat, and cold. IP67-rated enclosures protect electronics while sensors operate through any weather condition.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section how-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-cogs"></i> How It Works
+                </div>
+                <h2>Simple Yet Powerful Technology</h2>
+                <p>Four seamless steps that save lives at every blind curve on ghat roads.</p>
+            </div>
+            <div class="how-steps">
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">🚗</div>
+                    <h3>Vehicle Approaches</h3>
+                    <p>A vehicle enters the sensor detection zone before the blind curve.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">📡</div>
+                    <h3>Sensors Detect</h3>
+                    <p>IoT sensors instantly detect vehicle movement, speed, and direction.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">⚠️</div>
+                    <h3>Warnings Activate</h3>
+                    <p>LED displays and audio alerts activate on the opposite side of the curve.</p>
+                </div>
+                <div class="step-card animate-on-scroll">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">✅</div>
+                    <h3>Safe Crossing</h3>
+                    <p>Drivers slow down and cross the curve safely, preventing collisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section features-section" id="features">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-star"></i> Key Features
+                </div>
+                <h2>Built for Performance & Reliability</h2>
+                <p>Every feature is designed to maximize road safety while minimizing operational costs.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h3>IoT-Enabled Sensors</h3>
+                    <p>Smart sensors with wireless connectivity for real-time data transmission and remote monitoring.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>LED Warning Displays</h3>
+                    <p>High-visibility LED panels visible from 500m distance, even in fog and rain conditions.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-solar-panel"></i>
+                    </div>
+                    <h3>Solar-Powered Options</h3>
+                    <p>Sustainable solar power eliminates dependence on grid electricity in remote mountain locations.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Real-Time Dashboard</h3>
+                    <p>Centralized monitoring dashboard with live status, analytics, and alert management.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <h3>Low Operational Cost</h3>
+                    <p>Minimal power consumption and maintenance requirements keep total cost of ownership very low.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Weatherproof Design</h3>
+                    <p>IP67-rated enclosures and industrial-grade components for extreme weather resilience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="section benefits-section" id="benefits">
+        <div class="container">
+            <div class="benefits-grid">
+                <div class="animate-on-scroll">
+                    <div class="section-tag green">
+                        <i class="fas fa-check-circle"></i> Benefits
+                    </div>
+                    <h2 style="font-size: 2.2rem; margin-bottom: 16px;">Why Choose GhatGuard?</h2>
+                    <p style="color: var(--gray-500); margin-bottom: 30px; line-height: 1.8;">Our system delivers measurable safety improvements while supporting smart transportation initiatives across India.</p>
+                    <div class="benefits-list">
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-car-crash"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Reduces Accidents by up to 95%</h4>
+                                <p>Early warnings give drivers time to react and avoid head-on collisions at blind curves.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-road"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Improves Road Safety</h4>
+                                <p>Creates safer driving conditions for all vehicle types including heavy transport.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-smile"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Increases Driver Confidence</h4>
+                                <p>Drivers feel more secure knowing about approaching vehicles around blind curves.</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <div class="benefit-text">
+                                <h4>Supports Smart Transport</h4>
+                                <p>Aligns with national smart city and intelligent transport system initiatives.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="benefits-image animate-on-scroll">
+                    <div class="benefits-img">
+                        <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Safe crossing illustration -->
+                            <circle cx="200" cy="200" r="120" stroke="white" stroke-width="2" opacity="0.2"/>
+                            <circle cx="200" cy="200" r="80" stroke="white" stroke-width="2" opacity="0.15"/>
+                            
+                            <!-- Shield icon -->
+                            <path d="M200 100 L260 130 L260 200 Q260 260 200 300 Q140 260 140 200 L140 130 Z" fill="white" opacity="0.15" stroke="white" stroke-width="2"/>
+                            <path d="M185 200 L195 215 L225 180" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            
+                            <!-- Orbiting elements -->
+                            <circle cx="320" cy="200" r="8" fill="white" opacity="0.5">
+                                <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="360 200 200" dur="8s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="200" cy="80" r="6" fill="white" opacity="0.3">
+                                <animateTransform attributeName="transform" type="rotate" from="0 200 200" to="-360 200 200" dur="12s" repeatCount="indefinite"/>
+                            </circle>
+                            
+                            <!-- Signal waves -->
+                            <path d="M230 170 Q250 160 240 140" stroke="white" stroke-width="2" fill="none" opacity="0.3">
+                                <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M235 175 Q260 162 248 135" stroke="white" stroke-width="1.5" fill="none" opacity="0.2">
+                                <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2s" repeatCount="indefinite" begin="0.5s"/>
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Customers -->
+    <section class="section customers-section" id="customers">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-users"></i> Target Customers
+                </div>
+                <h2>Who We Serve</h2>
+                <p>GhatGuard is designed for organizations responsible for road safety and infrastructure development.</p>
+            </div>
+            <div class="customers-grid">
+                <div class="customer-card animate-on-scroll">
+                    <div class="customer-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <h3>Highway Authorities</h3>
+                    <p>National and state highway authorities managing ghat road networks.</p>
+                </div>
+                <div class="customer-card animate-on-scroll">
+                    <div class="customer-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Road Safety Departments</h3>
+                    <p>Government departments focused on reducing road accidents and improving safety.</p>
+                </div>
+                <div class="customer-card animate-on-scroll">
+                    <div class="customer-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h3>Government Agencies</h3>
+                    <p>Central and state government bodies implementing smart infrastructure projects.</p>
+                </div>
+                <div class="customer-card animate-on-scroll">
+                    <div class="customer-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Infrastructure Companies</h3>
+                    <p>Private companies involved in road construction and safety system deployment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Stats -->
+    <section class="section impact-section" id="impact">
+        <div class="container">
+            <div class="section-header animate-on-scroll" style="margin-bottom: 40px;">
+                <div class="section-tag" style="background: rgba(255,255,255,0.1); color: white;">
+                    <i class="fas fa-chart-bar"></i> Our Impact
+                </div>
+                <h2 style="color: white;">Making a Measurable Difference</h2>
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card animate-on-scroll">
+                    <div class="impact-icon">🛡️</div>
+                    <div class="impact-number"><span class="counter" data-target="2847">0</span>+</div>
+                    <div class="impact-label">Accidents Prevented</div>
+                </div>
+                <div class="impact-card animate-on-scroll">
+                    <div class="impact-icon">🛣️</div>
+                    <div class="impact-number"><span class="counter" data-target="156">0</span>+</div>
+                    <div class="impact-label">Roads Covered</div>
+                </div>
+                <div class="impact-card animate-on-scroll">
+                    <div class="impact-icon">❤️</div>
+                    <div class="impact-number"><span class="counter" data-target="1250">0</span>+</div>
+                    <div class="impact-label">Lives Protected</div>
+                </div>
+                <div class="impact-card animate-on-scroll">
+                    <div class="impact-icon">📡</div>
+                    <div class="impact-number"><span class="counter" data-target="520">0</span>+</div>
+                    <div class="impact-label">Sensors Deployed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section gallery-section" id="gallery">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag green">
+                    <i class="fas fa-images"></i> Gallery
+                </div>
+                <h2>See GhatGuard in Action</h2>
+                <p>Explore our installations across India's challenging ghat road networks.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item animate-on-scroll">
+                    <div class="gallery-img" style="background: linear-gradient(135deg, #1a4a2e, #2d7a4f);">
+                        <svg viewBox="0 0 400 400" width="90%" height="90%">
+                            <path d="M0 400 L100 200 L200 280 L300 100 L400 180 L400 400Z" fill="#0d3320" opacity="0.5"/>
+                            <path d="M20 380 Q100 350 160 280 Q220 210 260 180 Q300 150 360 140" stroke="#555" stroke-width="30" fill="none" stroke-linecap="round"/>
+                            <path d="M20 380 Q100 350 160 280 Q220 210 260 180 Q300 150 360 140" stroke="#777" stroke-width="2" fill="none" stroke-dasharray="10 8"/>
+                            <circle cx="160" cy="280" r="6" fill="#06d6a0"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
+                            <circle cx="300" cy="150" r="6" fill="#f59e0b"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" begin="0.5s"/></circle>
+                            <rect x="80" y="350" width="25" height="12" rx="4" fill="#3b82f6"/>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <h4>Ghat Road Installation</h4>
+                        <p>Sensor system deployed at blind curve</p>
+                    </div>
+                </div>
+                <div class="gallery-item animate-on-scroll">
+                    <div class="gallery-img" style="background: linear-gradient(135deg, #1e3a5f, #2563eb);">
+                        <svg viewBox="0 0 200 200" width="80%" height="80%">
+                            <rect x="30" y="40" width="140" height="120" rx="10" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                            <circle cx="100" cy="90" r="25" stroke="#06d6a0" stroke-width="2" fill="none"/>
+                            <circle cx="100" cy="90" r="8" fill="#06d6a0"/>
+                            <path d="M100 90 L115 80" stroke="#06d6a0" stroke-width="2"/>
+                            <rect x="45" y="125" width="30" height="6" rx="3" fill="#3b82f6"/>
+                            <rect x="80" y="125" width="20" height="6" rx="3" fill="#10b981"/>
+                            <rect x="105" y="125" width="25" height="6" rx="3" fill="#f59e0b"/>
+                            <rect x="135" y="125" width="20" height="6" rx="3" fill="#ef4444"/>
+                            <circle cx="50" cy="145" r="3" fill="#10b981"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <h4>Smart Sensor Unit</h4>
+                        <p>IoT-enabled detection module</p>
+                    </div>
+                </div>
+                <div class="gallery-item animate-on-scroll">
+                    <div class="gallery-img" style="background: linear-gradient(135deg, #7c2d12, #ea580c);">
+                        <svg viewBox="0 0 200 200" width="80%" height="80%">
+                            <rect x="85" y="30" width="30" height="140" rx="5" fill="#1e293b"/>
+                            <rect x="70" y="40" width="60" height="40" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                            <circle cx="100" cy="55" r="10" fill="#ef4444"><animate attributeName="opacity" values="1;0.2;1" dur="0.8s" repeatCount="indefinite"/></circle>
+                            <circle cx="100" cy="55" r="15" fill="none" stroke="#ef4444" opacity="0.3"><animate attributeName="r" values="15;22;15" dur="0.8s" repeatCount="indefinite"/></circle>
+                            <rect x="70" y="85" width="60" height="40" rx="5" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+                            <circle cx="100" cy="100" r="10" fill="#f59e0b"><animate attributeName="opacity" values="1;0.2;1" dur="0.8s" repeatCount="indefinite" begin="0.4s"/></circle>
+                            <rect x="75" y="172" width="50" height="8" rx="4" fill="#475569"/>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <h4>LED Warning Display</h4>
+                        <p>High-visibility alert signals</p>
+                    </div>
+                </div>
+                <div class="gallery-item animate-on-scroll">
+                    <div class="gallery-img" style="background: linear-gradient(135deg, #134e4a, #0d9488);">
+                        <svg viewBox="0 0 200 200" width="80%" height="80%">
+                            <rect x="20" y="30" width="160" height="100" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+                            <rect x="30" y="40" width="60" height="35" rx="4" fill="#1e293b"/>
+                            <rect x="35" y="48" width="50" height="3" rx="1" fill="#3b82f6" opacity="0.7"/>
+                            <rect x="35" y="55" width="35" height="3" rx="1" fill="#10b981" opacity="0.7"/>
+                            <rect x="35" y="62" width="42" height="3" rx="1" fill="#f59e0b" opacity="0.7"/>
+                            <rect x="100" y="40" width="70" height="80" rx="4" fill="#1e293b"/>
+                            <circle cx="135" cy="70" r="15" stroke="#10b981" stroke-width="2" fill="none"/>
+                            <path d="M125 70 L135 70 L135 58" stroke="#10b981" stroke-width="2"/>
+                            <text x="135" y="100" text-anchor="middle" fill="#94a3b8" font-size="8">Active: 45</text>
+                            <text x="135" y="112" text-anchor="middle" fill="#10b981" font-size="8">Online ●</text>
+                            <rect x="30" y="82" width="60" height="30" rx="4" fill="#1e293b"/>
+                            <rect x="38" y="90" width="8" height="15" rx="2" fill="#3b82f6"><animate attributeName="height" values="5;15;8;12;5" dur="3s" repeatCount="indefinite"/></rect>
+                            <rect x="50" y="90" width="8" height="12" rx="2" fill="#10b981"><animate attributeName="height" values="12;5;15;8;12" dur="3s" repeatCount="indefinite"/></rect>
+                            <rect x="62" y="90" width="8" height="8" rx="2" fill="#f59e0b"><animate attributeName="height" values="8;12;5;15;8" dur="3s" repeatCount="indefinite"/></rect>
+                            <rect x="74" y="90" width="8" height="14" rx="2" fill="#ef4444"><animate attributeName="height" values="14;8;12;5;14" dur="3s" repeatCount="indefinite"/></rect>
+                            <circle cx="100" cy="155" r="4" fill="#64748b"/>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <h4>Monitoring Dashboard</h4>
+                        <p>Real-time system monitoring</p>
+                    </div>
+                </div>
+                <div class="gallery-item animate-on-scroll">
+                    <div class="gallery-img" style="background: linear-gradient(135deg, #1e3a5f, #3b82f6);">
+                        <svg viewBox="0 0 200 200" width="80%" height="80%">
+                            <!-- Solar panel illustration -->
+                            <rect x="60" y="130" width="6" height="50" fill="#475569"/>
+                            <rect x="134" y="130" width="6" height="50" fill="#475569"/>
+                            <rect x="40" y="60" width="120" height="75" rx="4" fill="#1e40af" stroke="#3b82f6" stroke-width="2" transform="rotate(-15 100 97)"/>
+                            <line x1="60" y1="55" x2="135" y2="75" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <line x1="55" y1="70" x2="130" y2="90" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <line x1="50" y1="85" x2="125" y2="105" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <line x1="75" y1="50" x2="65" y2="115" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <line x1="95" y1="45" x2="85" y2="110" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <line x1="115" y1="55" x2="105" y2="120" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+                            <!-- Sun -->
+                            <circle cx="160" cy="35" r="15" fill="#fbbf24" opacity="0.8"/>
+                            <line x1="160" y1="12" x2="160" y2="18" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+                            <line x1="160" y1="52" x2="160" y2="58" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+                            <line x1="137" y1="35" x2="143" y2="35" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+                            <line x1="177" y1="35" x2="183" y2="35" stroke="#fbbf24" stroke-width="2" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <h4>Solar Power Unit</h4>
+                        <p>Sustainable energy solution</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="section dashboard-section" id="dashboard">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-desktop"></i> Dashboard Preview
+                </div>
+                <h2>Real-Time Monitoring Dashboard</h2>
+                <p>Monitor all your GhatGuard installations from a single centralized dashboard.</p>
+            </div>
+            <div class="dashboard-preview animate-on-scroll">
+                <div class="dashboard-header">
+                    <div class="dashboard-dot red"></div>
+                    <div class="dashboard-dot yellow"></div>
+                    <div class="dashboard-dot green"></div>
+                    <span class="dashboard-title">GhatGuard Control Center — Live Monitoring</span>
+                </div>
+                <div class="dashboard-content">
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <span class="dash-card-title">Active Sensors</span>
+                            <i class="fas fa-satellite-dish" style="color: #3b82f6;"></i>
+                        </div>
+                        <div class="dash-card-value">247</div>
+                        <div class="dash-card-change"><i class="fas fa-arrow-up"></i> 12 this month</div>
+                        <div class="dash-chart">
+                            <div class="dash-bar" style="height: 40%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 60%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 35%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 80%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 55%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 70%; background: #3b82f6;"></div>
+                            <div class="dash-bar" style="height: 90%; background: #3b82f6;"></div>
+                        </div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <span class="dash-card-title">Alerts Today</span>
+                            <i class="fas fa-bell" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="dash-card-value">1,842</div>
+                        <div class="dash-card-change"><i class="fas fa-arrow-up"></i> 8.3% vs yesterday</div>
+                        <div class="dash-chart">
+                            <div class="dash-bar" style="height: 50%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 70%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 45%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 85%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 60%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 75%; background: #f59e0b;"></div>
+                            <div class="dash-bar" style="height: 95%; background: #f59e0b;"></div>
+                        </div>
+                    </div>
+                    <div class="dash-card">
+                        <div class="dash-card-header">
+                            <span class="dash-card-title">System Health</span>
+                            <i class="fas fa-heartbeat" style="color: #10b981;"></i>
+                        </div>
+                        <div class="dash-card-value" style="color: #10b981;">99.8%</div>
+                        <div class="dash-card-change"><i class="fas fa-check-circle"></i> All systems operational</div>
+                        <div class="dash-chart">
+                            <div class="dash-bar" style="height: 95%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 98%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 96%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 100%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 97%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 99%; background: #10b981;"></div>
+                            <div class="dash-bar" style="height: 100%; background: #10b981;"></div>
+                        </div>
+                    </div>
+                    <div class="dash-card full-width">
+                        <div class="dash-card-header">
+                            <span class="dash-card-title">Sensor Map — Live Locations</span>
+                            <span style="color: #10b981; font-size: 0.8rem;"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> Live</span>
+                        </div>
+                        <div class="dash-map">
+                            <div class="map-dot" style="top: 30%; left: 20%;"></div>
+                            <div class="map-dot" style="top: 50%; left: 40%; animation-delay: 0.5s;"></div>
+                            <div class="map-dot" style="top: 25%; left: 60%; animation-delay: 1s;"></div>
+                            <div class="map-dot" style="top: 60%; left: 75%; animation-delay: 1.5s;"></div>
+                            <div class="map-dot" style="top: 40%; left: 30%; animation-delay: 0.3s;"></div>
+                            <div class="map-dot" style="top: 70%; left: 55%; animation-delay: 0.8s;"></div>
+                            <div class="map-dot" style="top: 35%; left: 85%; animation-delay: 1.2s;"></div>
+                            <div class="map-dot" style="top: 55%; left: 15%; animation-delay: 0.6s;"></div>
+                            <!-- Map lines connecting dots -->
+                            <svg style="position:absolute;top:0;left:0;width:100%;height:100%;" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <path d="M20 30 L40 50 L60 25 L75 60" stroke="rgba(6,214,160,0.2)" stroke-width="0.5" fill="none"/>
+                                <path d="M30 40 L55 70 L85 35" stroke="rgba(6,214,160,0.15)" stroke-width="0.5" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-quote-left"></i> Testimonials
+                </div>
+                <h2>What Experts Say</h2>
+                <p>Feedback from highway officials and road safety experts who trust GhatGuard.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"GhatGuard has revolutionized safety on our most dangerous ghat roads. The accident rate at blind curves has dropped by 92% since installation. This technology is a game-changer for mountainous road safety."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">RS</div>
+                        <div>
+                            <div class="testimonial-name">Rajesh Sharma</div>
+                            <div class="testimonial-role">Chief Engineer, National Highway Authority</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"The installation was seamless and the system performed flawlessly even during the monsoon season. The real-time dashboard gives us complete visibility into every sensor across our network."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">PM</div>
+                        <div>
+                            <div class="testimonial-name">Dr. Priya Menon</div>
+                            <div class="testimonial-role">Director, Road Safety Department, Maharashtra</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card animate-on-scroll">
+                    <div class="testimonial-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="testimonial-text">"We deployed GhatGuard across 45 critical curves in the Western Ghats. The solar-powered option was perfect for remote locations. Driver feedback has been overwhelmingly positive."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AK</div>
+                        <div>
+                            <div class="testimonial-name">Amit Kumar</div>
+                            <div class="testimonial-role">Project Manager, Smart Roads Initiative</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Request -->
+    <section class="section demo-section" id="demo">
+        <div class="container">
+            <div class="demo-grid">
+                <div class="demo-content animate-on-scroll">
+                    <div class="section-tag" style="background: rgba(16,185,129,0.15); color: var(--accent);">
+                        <i class="fas fa-play-circle"></i> Live Demo
+                    </div>
+                    <h2>Request a Live Demo</h2>
+                    <p>See GhatGuard in action. Our team will walk you through the entire system — from sensor deployment to dashboard monitoring — with a personalized live demonstration.</p>
+                    <ul class="demo-features">
+                        <li><i class="fas fa-check-circle"></i> Full system walkthrough</li>
+                        <li><i class="fas fa-check-circle"></i> Live dashboard demonstration</li>
+                        <li><i class="fas fa-check-circle"></i> Custom deployment planning</li>
+                        <li><i class="fas fa-check-circle"></i> Cost estimation & ROI analysis</li>
+                        <li><i class="fas fa-check-circle"></i> Q&A with our engineering team</li>
+                        <li><i class="fas fa-check-circle"></i> Site assessment consultation</li>
+                    </ul>
+                </div>
+                <div class="demo-form-container animate-on-scroll">
+                    <form class="demo-form" id="demoForm" onsubmit="submitDemoForm(event)">
+                        <h3>Schedule Your Demo</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name *</label>
+                                <input type="text" placeholder="John" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name *</label>
+                                <input type="text" placeholder="Doe" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" placeholder="john@organization.gov.in" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" placeholder="+91 98765 43210" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Organization *</label>
+                            <input type="text" placeholder="National Highway Authority" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Organization Type</label>
+                            <select>
+                                <option value="">Select type...</option>
+                                <option>Highway Authority</option>
+                                <option>Road Safety Department</option>
+                                <option>Government Agency</option>
+                                <option>Infrastructure Company</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Demo Date</label>
+                            <input type="date">
+                        </div>
+                        <div class="form-group">
+                            <label>Additional Notes</label>
+                            <textarea rows="3" placeholder="Tell us about your requirements..."></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i> Schedule Demo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact-section" id="contact">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-tag">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </div>
+                <h2>Get in Touch</h2>
+                <p>Have questions? Our team is ready to help you make your ghat roads safer.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info animate-on-scroll">
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <h4>Phone</h4>
+                            <p>+91 98765 43210</p>
+                            <p>+91 80 4567 8901</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <h4>Email</h4>
+                            <p>info@ghatguard.com</p>
+                            <p>sales@ghatguard.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <h4>Address</h4>
+                            <p>GhatGuard Technologies Pvt. Ltd.</p>
+                            <p>Tech Park, Whitefield, Bangalore 560066</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-info-text">
+                            <h4>Working Hours</h4>
+                            <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                            <p>Sat: 9:00 AM - 1:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="animate-on-scroll">
+                    <div class="contact-form">
+                        <h3>Send us a Message</h3>
+                        <form id="contactForm" onsubmit="submitContactForm(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name *</label>
+                                    <input type="text" placeholder="Your full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email *</label>
+                                    <input type="email" placeholder="your@email.com" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="form-group">
+                                <label>Subject *</label>
+                                <input type="text" placeholder="How can we help?" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Message *</label>
+                                <textarea rows="5" placeholder="Write your message here..." required></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn contact-submit">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.985397192028!2d77.7410!3d12.9698!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzExLjMiTiA3N8KwNDQnMjcuNiJF!5e0!3m2!1sen!2sin!4v1234567890" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="logo-text">Ghat<span>Guard</span></div>
+                    </a>
+                    <p>Making ghat roads safer with smart sensor technology. Real-time vehicle detection and driver alerts at blind curves to reduce accidents and save lives.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#problem">Problem</a></li>
+                        <li><a href="#solution">Solution</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#impact">Impact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">White Papers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li><a href="tel:+919876543210"><i class="fas fa-phone-alt" style="margin-right: 8px;"></i>+91 98765 43210</a></li>
+                        <li><a href="mailto:info@ghatguard.com"><i class="fas fa-envelope" style="margin-right: 8px;"></i>info@ghatguard.com</a></li>
+                        <li><a href="#contact"><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>Bangalore, India</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 GhatGuard Technologies Pvt. Ltd. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Loader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').classList.add('hidden');
+            }, 800);
+        });
+
+        // Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Navbar scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTop');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.getElementById('hamburger');
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.getElementById('hamburger');
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    
+                    // Counter animation
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(function(counter) {
+                        animateCounter(counter);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+            observer.observe(el);
+        });
+
+        // Counter animation
+        function animateCounter(counter) {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            function updateCounter() {
+                current += increment;
+                if (current < target) {
+                    counter.textContent = Math.floor(current).toLocaleString();
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target.toLocaleString();
+                }
+            }
+
+            updateCounter();
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(function() {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Demo form submit
+        function submitDemoForm(e) {
+            e.preventDefault();
+            showNotification('Demo request submitted successfully! We\'ll contact you within 24 hours.');
+            e.target.reset();
+        }
+
+        // Contact form submit
+        function submitContactForm(e) {
+            e.preventDefault();
+            showNotification('Message sent successfully! Our team will respond shortly.');
+            e.target.reset();
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 70;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add staggered animation delays
+        document.querySelectorAll('.solution-card, .feature-card, .customer-card, .step-card, .testimonial-card').forEach(function(card, index) {
+            card.style.transitionDelay = (index % 4) * 0.1 + 's';
+        });
+    </script>
+</body>
+</html>
